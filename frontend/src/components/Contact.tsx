@@ -132,28 +132,9 @@ export default function Contact() {
                   </div>
                 </a>
 
-                <a
-                  href="https://linkedin.com/company/aetherion-technologies"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-4 group focus:outline-none self-start"
-                >
-                  <div className="p-3 rounded-xl border border-ivory/5 bg-graphite/20 text-platinum group-hover:text-ivory group-hover:bg-steel-blue/10 group-hover:border-steel-blue/30 transition-colors">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" className="text-platinum group-hover:text-ivory transition-colors">
-                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.8v8h2.8v-4.87c0-.26.05-.52.12-.7a1.11 1.11 0 0 1 .97-.73c.55 0 .77.41.77 1v4.6h2.8M6.5 8.37a1.37 1.37 0 1 0 0-2.75 1.37 1.37 0 0 0 0 2.75M8 18.5h-3v-8h3v8z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-platinum/40">LinkedIn Corporate</div>
-                    <span className="text-sm font-semibold text-ivory group-hover:text-platinum transition-colors">
-                      Aetherion Technologies
-                    </span>
-                  </div>
-                </a>
-
                 {/* WhatsApp Chat link */}
                 <a
-                  href="https://wa.me/1234567890?text=Hello%20Aetherion%2C%20I'd%20like%20to%20book%20an%20architectural%20consultation."
+                  href="https://wa.me/919924681662?text=Hello%20Aetherion%2C%20I'd%20like%20to%20book%20an%20architectural%20consultation."
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-4 group focus:outline-none self-start"
