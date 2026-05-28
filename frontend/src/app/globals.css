@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+@theme {
+  --color-charcoal: #111111;
+  --color-ivory: #F5F3EF;
+  --color-graphite: #2A2A2A;
+  --color-platinum: #B8B8B8;
+  --color-steel-blue: #3E536B;
+  
+  --font-space: "Space Grotesk", sans-serif;
+  --font-inter: "Inter", sans-serif;
+}
+
+:root {
+  --background: #111111;
+  --foreground: #F5F3EF;
+  --color-charcoal: #111111;
+  --color-ivory: #F5F3EF;
+  --color-graphite: #2A2A2A;
+  --color-platinum: #B8B8B8;
+  --color-steel-blue: #3E536B;
+}
+
+/* Smooth behaviors and premium styles */
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-charcoal);
+  color: var(--color-ivory);
+}
+
+body {
+  background-color: var(--color-charcoal);
+  color: var(--color-ivory);
+  font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Subtle premium scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111111;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3e536b;
+}
+
+/* Interactive custom grain noise vector */
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  content: "";
+  opacity: 0.015;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Layout Structural Grids */
+.grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(245, 243, 239, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 243, 239, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.grid-pattern-fine {
+  background-image: 
+    linear-gradient(to right, rgba(245, 243, 239, 0.01) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 243, 239, 0.01) 1px, transparent 1px);
+  background-size: 25px 25px;
+}
+
+/* Bespoke glassmorphic components */
+.glass-panel {
+  background: rgba(26, 26, 26, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 243, 239, 0.06);
+}
+
+.glass-panel-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(42, 42, 42, 0.6);
+  border-color: rgba(245, 243, 239, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+}
+
+/* Soft spotlights */
+.spotlight {
+  background: radial-gradient(circle 800px at var(--x, 0px) var(--y, 0px), rgba(62, 83, 107, 0.15), transparent 80%);
+}
+
+/* Custom interactive animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-subtle-float {
+  animation: float 7s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.3; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 10s ease-in-out infinite;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
