@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Cpu, Database, BarChart3, ShieldCheck, Zap, Play, CheckCircle } from "lucide-react";
+import { Cpu, Database, BarChart3, ShieldCheck, Zap, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Service {
@@ -56,28 +56,7 @@ export default function Services() {
 
 
 
-  // AI Pipeline Simulator states
-  const [aiStep, setAiStep] = useState<number>(0);
-  const [aiRunning, setAiRunning] = useState(false);
 
-  const triggerAiPipeline = () => {
-    if (aiRunning) return;
-    setAiRunning(true);
-    setAiStep(1);
-
-    const steps = [1, 2, 3, 4];
-    steps.forEach((step, idx) => {
-      setTimeout(() => {
-        setAiStep(step);
-        if (step === 4) {
-          setTimeout(() => {
-            setAiRunning(false);
-            setAiStep(0);
-          }, 1500);
-        }
-      }, (idx + 1) * 1200);
-    });
-  };
 
 
 
@@ -189,84 +168,29 @@ export default function Services() {
 
                       {/* Visual Flow diagram */}
                       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center relative my-6">
-                        <div
-                          className={`p-3.5 rounded-xl border text-center font-mono text-[10.5px] transition-all ${
-                            aiStep >= 1
-                              ? "bg-steel-blue/10 border-steel-blue text-ivory"
-                              : "bg-graphite/40 border-ivory/5 text-platinum/50"
-                          }`}
-                        >
+                        <div className="p-3.5 rounded-xl border text-center font-mono text-[10.5px] bg-steel-blue/10 border-steel-blue text-ivory">
                           <div className="text-[9px] text-platinum/40 mb-1">NODE 01</div>
                           Payload Ingest
                         </div>
-                        <div
-                          className={`p-3.5 rounded-xl border text-center font-mono text-[10.5px] transition-all ${
-                            aiStep >= 2
-                              ? "bg-steel-blue/10 border-steel-blue text-ivory"
-                              : "bg-graphite/40 border-ivory/5 text-platinum/50"
-                          }`}
-                        >
+                        <div className="p-3.5 rounded-xl border text-center font-mono text-[10.5px] bg-steel-blue/10 border-steel-blue text-ivory">
                           <div className="text-[9px] text-platinum/40 mb-1">NODE 02</div>
                           LLM Analysis
                         </div>
-                        <div
-                          className={`p-3.5 rounded-xl border text-center font-mono text-[10.5px] transition-all ${
-                            aiStep >= 3
-                              ? "bg-steel-blue/10 border-steel-blue text-ivory"
-                              : "bg-graphite/40 border-ivory/5 text-platinum/50"
-                          }`}
-                        >
+                        <div className="p-3.5 rounded-xl border text-center font-mono text-[10.5px] bg-steel-blue/10 border-steel-blue text-ivory">
                           <div className="text-[9px] text-platinum/40 mb-1">NODE 03</div>
                           DB Sync Lock
                         </div>
-                        <div
-                          className={`p-3.5 rounded-xl border text-center font-mono text-[10.5px] transition-all ${
-                            aiStep >= 4
-                              ? "bg-emerald-500/10 border-emerald-500 text-emerald-400 font-semibold"
-                              : "bg-graphite/40 border-ivory/5 text-platinum/50"
-                          }`}
-                        >
+                        <div className="p-3.5 rounded-xl border text-center font-mono text-[10.5px] bg-emerald-500/10 border-emerald-500 text-emerald-400 font-semibold">
                           <div className="text-[9px] text-platinum/40 mb-1">OUTPUT</div>
                           Action Dispatched
                         </div>
                       </div>
-
-                      {/* Status console outputs */}
-                      <div className="bg-charcoal/80 p-4 rounded-xl border border-ivory/5 font-mono text-[11px] h-[100px] flex flex-col justify-end text-platinum/60">
-                        {aiStep === 0 && <div>❯ Console idle. Feed input payload to start.</div>}
-                        {aiStep >= 1 && (
-                          <div className="text-steel-blue">❯ [INGEST] Ingested user ticket #4089. Validating token length...</div>
-                        )}
-                        {aiStep >= 2 && (
-                          <div className="text-platinum">
-                            ❯ [REASONING] Prompting LLM routing agent. Task identified as [DB_MUTATION_CRITICAL].
-                          </div>
-                        )}
-                        {aiStep >= 3 && (
-                          <div className="text-yellow-400/90">
-                            ❯ [TRANSACTION] Preparing MongoDB transaction. Checking replica consensus...
-                          </div>
-                        )}
-                        {aiStep >= 4 && (
-                          <div className="text-emerald-400 font-semibold">
-                            ❯ [DISPATCH] Transaction committed. User notified via Webhook. Execution time: 148ms.
-                          </div>
-                        )}
-                      </div>
                     </div>
 
-                    <button
-                      onClick={triggerAiPipeline}
-                      disabled={aiRunning}
-                      className={`mt-6 w-full py-3.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border border-ivory/10 transition-colors ${
-                        aiRunning
-                          ? "bg-graphite/20 text-platinum/40 cursor-not-allowed"
-                          : "bg-ivory text-charcoal hover:bg-platinum"
-                      }`}
-                    >
-                      <Play size={12} className={aiRunning ? "animate-pulse" : ""} />
-                      {aiRunning ? "Processing Pipeline..." : "Trigger Analysis Pipeline"}
-                    </button>
+                    <div className="mt-6 flex justify-between gap-4 font-mono text-[10px] text-platinum/50 uppercase tracking-wide border-t border-ivory/5 pt-4">
+                      <span>Pipeline ready</span>
+                      <span>Status: Online</span>
+                    </div>
                   </motion.div>
                 )}
 
