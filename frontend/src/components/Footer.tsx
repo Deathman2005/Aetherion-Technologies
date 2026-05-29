@@ -179,7 +179,7 @@ export default function Footer() {
                 Careers
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://linkedin.com/company/aetheriontechnologies"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-inter text-xs text-platinum/70 hover:text-ivory transition-colors self-start"
