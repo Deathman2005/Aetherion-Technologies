@@ -130,7 +130,7 @@ const privacySections = [
       <div className="font-inter text-xs text-platinum/75 leading-relaxed font-light">
         <p className="mb-2">If you have any questions regarding this Privacy Policy or how your information is handled, contact:</p>
         <p className="font-semibold text-ivory">Aetherion Technologies</p>
-        <p className="text-steel-blue">Email: <a href="mailto:hello@aetherion.tech" className="hover:underline text-platinum">hello@aetherion.tech</a></p>
+        <p className="text-steel-blue">Email: <a href="mailto:hello.aetherion.tech@gmail.com" className="hover:underline text-platinum">hello.aetherion.tech@gmail.com</a></p>
       </div>
     )
   },

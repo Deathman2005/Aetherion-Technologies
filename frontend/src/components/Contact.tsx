@@ -118,7 +118,7 @@ export default function Contact() {
               {/* Direct Channels links */}
               <div className="flex flex-col gap-5 mb-10">
                 <a
-                  href="mailto:hello@aetherion.tech"
+                  href="mailto:hello.aetherion.tech@gmail.com"
                   className="flex items-center gap-4 group focus:outline-none self-start"
                 >
                   <div className="p-3 rounded-xl border border-ivory/5 bg-graphite/20 text-platinum group-hover:text-ivory group-hover:bg-steel-blue/10 group-hover:border-steel-blue/30 transition-colors">
@@ -127,7 +127,7 @@ export default function Contact() {
                   <div>
                     <div className="text-[10px] font-mono uppercase tracking-wider text-platinum/40">Email Inquiry</div>
                     <span className="text-sm font-semibold text-ivory group-hover:text-platinum transition-colors">
-                      hello@aetherion.tech
+                      hello.aetherion.tech@gmail.com
                     </span>
                   </div>
                 </a>
