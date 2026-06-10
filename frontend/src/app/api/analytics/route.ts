@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, collection, getDocs, query, orderBy } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, orderBy, doc, deleteDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
 // Secure Firebase configuration loaded from environment variables
@@ -56,6 +56,44 @@ export async function GET(request: Request) {
     console.error("[Analytics API Error]:", error);
     return NextResponse.json(
       { success: false, message: error.message || "Failed to retrieve analytics data." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    // Extract and verify secure custom PIN header
+    const authHeader = request.headers.get("x-admin-pin");
+    const securePin = process.env.ADMIN_ACCESS_PIN || "2026";
+
+    if (!authHeader || authHeader !== securePin) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized. Insufficient privileges." },
+        { status: 401 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: "Lead ID is required." },
+        { status: 400 }
+      );
+    }
+
+    await deleteDoc(doc(db, "contacts", id));
+
+    return NextResponse.json({
+      success: true,
+      message: "Consultation lead deleted successfully."
+    });
+  } catch (error: any) {
+    console.error("[Analytics Leads Delete API Error]:", error);
+    return NextResponse.json(
+      { success: false, message: error.message || "Failed to delete consultation lead." },
       { status: 500 }
     );
   }
