@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import {
   ArrowLeft, Lock, Loader2, Search, Filter, Mail, Copy, CheckCircle2,
   ChevronDown, ChevronUp, BarChart3, Users, Award, ShieldCheck,
-  FileText, Globe, Briefcase, Sparkles
+  FileText, Globe, Briefcase, Sparkles, Trash2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -93,6 +93,15 @@ export default function AnalyticsDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [serviceFilter, setServiceFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
+
+  // Deletion state
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    name: string;
+    type: "lead" | "candidate";
+  } | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Check sessionStorage on mount so reloading doesn't lock the dashboard again
   useEffect(() => {
@@ -205,6 +214,45 @@ export default function AnalyticsDashboard() {
     setExpandedId(expandedId === id ? null : id);
   };
 
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+
+    setDeleting(true);
+    setDeleteError(null);
+
+    const adminPin = sessionStorage.getItem("admin_access_pin") || pin;
+
+    try {
+      const endpoint = deleteTarget.type === "candidate"
+        ? `/api/analytics/applications?id=${deleteTarget.id}`
+        : `/api/analytics?id=${deleteTarget.id}`;
+
+      const response = await fetch(endpoint, {
+        method: "DELETE",
+        headers: {
+          "x-admin-pin": adminPin,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        if (deleteTarget.type === "candidate") {
+          setApplications((prev) => prev.filter((app) => app.id !== deleteTarget.id));
+        } else {
+          setSubmissions((prev) => prev.filter((sub) => sub.id !== deleteTarget.id));
+        }
+        setDeleteTarget(null);
+      } else {
+        setDeleteError(data.message || `Failed to delete ${deleteTarget.type}.`);
+      }
+    } catch (err: any) {
+      setDeleteError(err.message || "Network error. Failed to connect to deletion API.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   // Reset filters when switching tabs
   const handleTabChange = (tab: "leads" | "candidates") => {
     setActiveTab(tab);
@@ -234,7 +282,7 @@ export default function AnalyticsDashboard() {
       app.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.skills.some((s) => s.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesRole = roleFilter === "" || app.role === roleFilter;
+    const matchesRole = roleFilter === "" || app.role.toLowerCase() === roleFilter.toLowerCase();
     return matchesSearch && matchesRole;
   });
 
@@ -337,10 +385,10 @@ export default function AnalyticsDashboard() {
 service cloud.firestore {
   match /databases/{database}/documents {
     match /contacts/{document} {
-      allow create, read: if true;
+      allow create, read, delete: if true;
     }
     match /applications/{document} {
-      allow create, read: if true;
+      allow create, read, delete: if true;
     }
   }
 }`}
@@ -610,7 +658,9 @@ service cloud.firestore {
                         className="w-full bg-charcoal/60 border border-ivory/10 rounded-xl pl-10 pr-4 py-3 text-xs text-ivory focus:outline-none focus:border-steel-blue focus:ring-1 focus:ring-steel-blue transition-all cursor-pointer appearance-none"
                       >
                         <option value="" className="bg-charcoal text-platinum/60">Filter by role...</option>
-                        <option value="Frontend Engineer" className="bg-charcoal">Frontend Engineer</option>
+                        <option value="Frontend Developer" className="bg-charcoal">Frontend Developer</option>
+                        <option value="Lead Generation Associate" className="bg-charcoal">Lead Generation Associate</option>
+                        <option value="Business Development Associate" className="bg-charcoal">Business Development Associate</option>
                         <option value="Backend Engineer" className="bg-charcoal">Backend Engineer</option>
                         <option value="Full Stack Engineer" className="bg-charcoal">Full Stack Engineer</option>
                         <option value="AI Automation Engineer" className="bg-charcoal">AI Automation Engineer</option>
@@ -686,8 +736,25 @@ service cloud.firestore {
                                       {sub.service}
                                     </div>
 
-                                    <div className="hidden md:flex col-span-1 justify-end text-platinum/30">
-                                      {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                    <div className="hidden md:flex col-span-1 justify-end items-center gap-3 text-platinum/30">
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setDeleteTarget({
+                                            id: sub.id,
+                                            name: sub.name,
+                                            type: "lead",
+                                          });
+                                          setDeleteError(null);
+                                        }}
+                                        className="text-platinum/45 hover:text-red-400 hover:bg-red-500/10 p-1 rounded transition-colors duration-200 cursor-pointer"
+                                        title="Delete Inquiry"
+                                      >
+                                        <Trash2 size={14} />
+                                      </button>
+                                      <div>
+                                        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                      </div>
                                     </div>
                                   </div>
 
@@ -746,6 +813,21 @@ service cloud.firestore {
                                                     Copy
                                                   </>
                                                 )}
+                                              </button>
+
+                                              <button
+                                                onClick={() => {
+                                                  setDeleteTarget({
+                                                    id: sub.id,
+                                                    name: sub.name,
+                                                    type: "lead",
+                                                  });
+                                                  setDeleteError(null);
+                                                }}
+                                                className="py-2.5 px-4 rounded-lg border border-red-500/20 text-red-400 hover:text-red-300 hover:bg-red-500/10 font-space font-semibold text-[10.5px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all focus:outline-none cursor-pointer"
+                                              >
+                                                <Trash2 size={12} />
+                                                Delete Lead
                                               </button>
                                             </div>
                                           </div>
@@ -814,8 +896,25 @@ service cloud.firestore {
                                       </span>
                                     </div>
 
-                                    <div className="hidden md:flex col-span-1 justify-end text-platinum/30">
-                                      {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                    <div className="hidden md:flex col-span-1 justify-end items-center gap-3 text-platinum/30">
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setDeleteTarget({
+                                            id: app.id,
+                                            name: app.fullName,
+                                            type: "candidate",
+                                          });
+                                          setDeleteError(null);
+                                        }}
+                                        className="text-platinum/45 hover:text-red-400 hover:bg-red-500/10 p-1 rounded transition-colors duration-200 cursor-pointer"
+                                        title="Delete Candidate"
+                                      >
+                                        <Trash2 size={14} />
+                                      </button>
+                                      <div>
+                                        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                      </div>
                                     </div>
                                   </div>
 
@@ -939,6 +1038,21 @@ service cloud.firestore {
                                                 <Mail size={12} />
                                                 Contact Candidate
                                               </a>
+
+                                              <button
+                                                onClick={() => {
+                                                  setDeleteTarget({
+                                                    id: app.id,
+                                                    name: app.fullName,
+                                                    type: "candidate",
+                                                  });
+                                                  setDeleteError(null);
+                                                }}
+                                                className="w-full py-2.5 rounded-lg border border-red-500/20 text-red-400 hover:text-red-300 hover:bg-red-500/10 font-space font-semibold text-[10.5px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all focus:outline-none cursor-pointer"
+                                              >
+                                                <Trash2 size={12} />
+                                                Delete Candidate
+                                              </button>
                                             </div>
                                           </div>
 
@@ -964,6 +1078,81 @@ service cloud.firestore {
 
         </div>
       </main>
+
+      {/* Premium Glassmorphic Confirmation Modal */}
+      <AnimatePresence>
+        {deleteTarget && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => !deleting && setDeleteTarget(null)}
+              className="absolute inset-0 bg-charcoal/80 backdrop-blur-sm"
+            />
+
+            {/* Modal Body */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ type: "spring", duration: 0.4 }}
+              className="relative w-full max-w-md glass-panel p-6 rounded-2xl border-ivory/10 bg-graphite/20 shadow-[0_25px_60px_rgba(0,0,0,0.8)] overflow-hidden"
+            >
+              {/* Subtle visual accent */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-amber-500" />
+
+              <div className="flex flex-col items-center text-center mt-2">
+                {/* Warning/Trash Icon Container */}
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mb-4">
+                  <Trash2 size={20} />
+                </div>
+
+                <h3 className="font-space text-lg font-semibold text-ivory mb-2">
+                  Confirm Deletion
+                </h3>
+
+                <p className="font-inter text-xs text-platinum/70 leading-relaxed mb-6">
+                  Are you sure you want to permanently delete the {deleteTarget.type === "candidate" ? "candidate application" : "consultation lead"} for{" "}
+                  <strong className="text-ivory font-semibold">{deleteTarget.name}</strong>? This action is irreversible.
+                </p>
+
+                {deleteError && (
+                  <div className="w-full p-3 mb-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-inter text-left">
+                    {deleteError}
+                  </div>
+                )}
+
+                <div className="flex gap-3 w-full">
+                  <button
+                    disabled={deleting}
+                    onClick={() => setDeleteTarget(null)}
+                    className="flex-1 py-3 rounded-xl border border-ivory/10 hover:bg-graphite/30 text-ivory hover:border-ivory/20 font-space font-semibold text-xs uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    disabled={deleting}
+                    onClick={handleDeleteConfirm}
+                    className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-ivory font-space font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer disabled:opacity-50"
+                  >
+                    {deleting ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      "Delete"
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <Footer />
     </>
   );

@@ -39,7 +39,10 @@ export async function POST(request: Request) {
     const resumeFile = formData.get("resume") as File;
 
     // Validate mandatory fields
-    if (!fullName || !email || !role || !experience || !githubUrl || !whyJoin || !proudProject || !resumeFile) {
+    const isTechnicalRole = role === "Frontend Developer";
+    const hasRequiredSocial = isTechnicalRole ? githubUrl : linkedinUrl;
+
+    if (!fullName || !email || !role || !experience || !hasRequiredSocial || !whyJoin || !proudProject || !resumeFile) {
       return NextResponse.json(
         { success: false, message: "Required application fields or resume files are missing." },
         { status: 400 }
@@ -121,7 +124,7 @@ export async function POST(request: Request) {
       role,
       experience,
       portfolioUrl: portfolioUrl || "",
-      githubUrl,
+      githubUrl: githubUrl || "",
       linkedinUrl: linkedinUrl || "",
       skills,
       whyJoin,

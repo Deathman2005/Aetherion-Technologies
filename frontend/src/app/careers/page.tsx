@@ -48,6 +48,8 @@ interface Role {
   experience: string;
   description: string;
   skills: string[];
+  prerequisites: string[];
+  responsibilities: string[];
 }
 
 const openRoles: Role[] = [
@@ -55,9 +57,66 @@ const openRoles: Role[] = [
     title: "Frontend Developer",
     department: "Design & Interaction",
     type: "Full-Time / Remote",
-    experience: "1-3 Years",
+    experience: "1–3 Years",
     description: "Build immersive, fluid user experiences using React/Next.js. Transform high-fidelity design schemas into interactive, responsive, and performant web interfaces.",
-    skills: ["React.js", "Next.js", "TypeScript", "Tailwind CSS", "UI/UX Design"]
+    skills: ["React.js", "Next.js", "TypeScript", "Tailwind CSS", "UI/UX Design"],
+    prerequisites: [
+      "Solid grasp of React.js, Next.js (App Router), and modern TypeScript.",
+      "Mastery of responsive layouts, HSL design tokens, and CSS frameworks (Tailwind).",
+      "Experience integrating secure JSON/Serverless API endpoints with robust error intercepts.",
+      "Eye for dynamic user experiences, glassmorphic themes, and Framer Motion micro-animations.",
+      "Commitment to clean modular code structures, Git workflows, and technical reviews."
+    ],
+    responsibilities: [
+      "Translate beautiful UX blueprints into responsive Next.js views.",
+      "Build performant, highly interactive metrics dashboards.",
+      "Optimize client bundles, hydration streams, and SEO structures.",
+      "Integrate AI agent response triggers and file ingestion channels."
+    ]
+  },
+  {
+    title: "Lead Generation Associate",
+    department: "Business Growth & Research",
+    type: "Remote • Founding Team",
+    experience: "Students & Freshers Welcome",
+    description: "We are looking for a proactive Lead Generation Associate to help identify potential clients and growth opportunities for Aetherion Technologies. You will research businesses, discover decision-makers, and build qualified prospect databases that support the company's expansion efforts.",
+    skills: ["Google Search", "LinkedIn", "Google Sheets", "Apollo (Optional)", "Email Research", "Market Research"],
+    prerequisites: [
+      "Strong internet research and information gathering skills.",
+      "Familiarity with Google Search, LinkedIn, and business directories.",
+      "Ability to identify decision-makers and business opportunities.",
+      "Excellent attention to detail and organizational skills.",
+      "Self-motivated mindset with a willingness to learn."
+    ],
+    responsibilities: [
+      "Research companies across multiple industries.",
+      "Build and maintain qualified lead databases.",
+      "Identify founders, business owners, and decision-makers.",
+      "Collect business contact information and market insights.",
+      "Support outreach preparation and growth initiatives."
+    ]
+  },
+  {
+    title: "Business Development Associate",
+    department: "Sales & Client Acquisition",
+    type: "Remote • Founding Team",
+    experience: "Students & Freshers Welcome",
+    description: "We are looking for a confident and ambitious Business Development Associate to help build relationships with potential clients and contribute to Aetherion's growth. You will engage with prospects, initiate conversations, and help convert opportunities into meaningful business relationships.",
+    skills: ["LinkedIn", "Email Outreach", "WhatsApp", "Google Meet", "CRM Systems", "Sales Research"],
+    prerequisites: [
+      "Strong verbal and written communication skills.",
+      "Professional and confident approach to client conversations.",
+      "Ability to understand business requirements.",
+      "Comfortable with email, LinkedIn, and WhatsApp outreach.",
+      "Growth-oriented and self-driven mindset."
+    ],
+    responsibilities: [
+      "Conduct outreach to potential clients.",
+      "Schedule discovery calls and meetings.",
+      "Follow up with prospects and maintain communication.",
+      "Support client acquisition and relationship building.",
+      "Assist in proposal and business development activities."
+    ]
   }
 ];
 
@@ -67,9 +126,14 @@ const coreTechnologies = [
   "Supabase", "Python", "AI / LLM Integration", "DevOps", "UI/UX Design"
 ];
 
+const businessSkills = [
+  "Google Search", "LinkedIn", "Google Sheets", "Apollo (Optional)", "Email Research",
+  "Market Research", "Email Outreach", "WhatsApp", "Google Meet", "CRM Systems", "Sales Research"
+];
+
 export default function CareersPage() {
   const [activeStep, setActiveStep] = useState(1);
-  const [selectedRole, setSelectedRole] = useState("Frontend Developer");
+  const [selectedRole, setSelectedRole] = useState(openRoles[0].title);
   const [skills, setSkills] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -156,8 +220,12 @@ export default function CareersPage() {
         setErrorMsg("Please select the Role and your Experience Level.");
         return;
       }
-      if (!githubUrl.trim()) {
-        setErrorMsg("Your GitHub profile link is mandatory.");
+      if (selectedRole === "Frontend Developer" && !githubUrl.trim()) {
+        setErrorMsg("Your GitHub profile link is mandatory for engineering roles.");
+        return;
+      }
+      if (selectedRole !== "Frontend Developer" && !linkedinUrl.trim()) {
+        setErrorMsg("Your LinkedIn profile link is mandatory for business growth roles.");
         return;
       }
     }
@@ -165,11 +233,15 @@ export default function CareersPage() {
     // Validate Step 3
     if (activeStep === 3) {
       if (skills.length === 0) {
-        setErrorMsg("Please select at least one core technology skill.");
+        setErrorMsg(
+          selectedRole === "Frontend Developer"
+            ? "Please select at least one core technology skill."
+            : "Please select at least one core tool skill."
+        );
         return;
       }
       if (!whyJoin.trim() || !proudProject.trim()) {
-        setErrorMsg("Please answer the short architectural essays.");
+        setErrorMsg("Please answer the short application essays.");
         return;
       }
     }
@@ -246,125 +318,119 @@ export default function CareersPage() {
               Engineering Careers
             </h1>
             <p className="font-inter text-sm sm:text-base text-platinum/60 leading-relaxed font-light">
-              Aetherion Technologies is in an early, highly selective stage of growth. We are currently searching for one exceptional Frontend Developer to join our core product engineering team. Explore the prerequisites below and transmit your blueprints.
+              Aetherion Technologies is in an early, highly selective stage of growth. We are currently searching for exceptional individuals to join our core founding team. Explore our active vacancies below and transmit your credentials.
             </p>
           </div>
 
           {/* ========================================================
-              1. OPEN POSITIONS SECTION (SINGLE VACANCY DESIGN)
+              1. OPEN POSITIONS SECTION (MULTIPLE VACANCIES DESIGN)
              ======================================================== */}
           <div className="mb-24 flex flex-col gap-10">
             <div className="flex items-center gap-4 border-b border-ivory/5 pb-4">
               <Briefcase size={18} className="text-steel-blue" />
-              <h2 className="font-space text-xl font-medium text-ivory">Active Vacancy</h2>
+              <h2 className="font-space text-xl font-medium text-ivory">Active Vacancies</h2>
             </div>
 
-            <div className="w-full glass-panel p-8 sm:p-10 rounded-2xl border-ivory/8 bg-graphite/10 flex flex-col gap-8 hover:border-steel-blue/20 transition-all duration-300 shadow-lg relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-steel-blue/5 rounded-full blur-3xl pointer-events-none" />
+            {openRoles.map((role) => (
+              <div
+                key={role.title}
+                className="w-full glass-panel p-8 sm:p-10 rounded-2xl border-ivory/8 bg-graphite/10 flex flex-col gap-8 hover:border-steel-blue/20 transition-all duration-300 shadow-lg relative overflow-hidden animate-fade-in"
+              >
+                <div className="absolute top-0 right-0 w-64 h-64 bg-steel-blue/5 rounded-full blur-3xl pointer-events-none" />
 
-              {/* Card Title & Meta Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-ivory/5 pb-6 text-left">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-steel-blue font-bold">
-                    <span>Design & Interaction</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-steel-blue/30" />
-                    <span>Full-Time / Remote</span>
+                {/* Card Title & Meta Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-ivory/5 pb-6 text-left">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-steel-blue font-bold">
+                      <span>{role.department}</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-steel-blue/30" />
+                      <span>{role.type}</span>
+                    </div>
+                    <h3 className="font-space text-2xl sm:text-3xl font-semibold tracking-tight text-ivory mt-1">
+                      {role.title}
+                    </h3>
                   </div>
-                  <h3 className="font-space text-2xl sm:text-3xl font-semibold tracking-tight text-ivory mt-1">
-                    Frontend Developer
-                  </h3>
+
+                  <span className="self-start sm:self-center px-3 py-1.5 rounded-xl bg-steel-blue/10 border border-steel-blue/20 text-xs font-mono font-semibold text-steel-blue">
+                    {role.experience}
+                  </span>
                 </div>
 
-                <span className="self-start sm:self-center px-3 py-1.5 rounded-xl bg-steel-blue/10 border border-steel-blue/20 text-xs font-mono font-semibold text-steel-blue">
-                  1–3 Years Experience
-                </span>
-              </div>
+                {/* Card Body - Requirements and Responsibilities Columns */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 text-left">
+                  {/* Left Column: Requirements & About */}
+                  <div className="md:col-span-7 flex flex-col gap-6">
+                    <div className="flex flex-col gap-2.5">
+                      <span className="font-space text-[10.5px] font-bold uppercase tracking-wider text-steel-blue">
+                        About the Vacancy
+                      </span>
+                      <p className="font-inter text-xs sm:text-sm text-platinum/70 leading-relaxed font-light">
+                        {role.description}
+                      </p>
+                    </div>
 
-              {/* Card Body - Requirements and Responsibilities Columns */}
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 text-left">
-                {/* Left Column: Requirements & About */}
-                <div className="md:col-span-7 flex flex-col gap-6">
-                  <div className="flex flex-col gap-2.5">
-                    <span className="font-space text-[10.5px] font-bold uppercase tracking-wider text-steel-blue">
-                      About the Vacancy
-                    </span>
-                    <p className="font-inter text-xs sm:text-sm text-platinum/70 leading-relaxed font-light">
-                      We are looking for a passionate Frontend Developer to design and implement highly reactive, premium user interfaces. You will translate wireframes and architectural HSL layout specifications into fluid React/Next.js pages, optimizing performance, micro-animations, and client-side ingestion systems.
-                    </p>
+                    <div className="flex flex-col gap-3">
+                      <span className="font-space text-[10.5px] font-bold uppercase tracking-wider text-steel-blue">
+                        Core Prerequisites
+                      </span>
+                      <ul className="font-inter text-xs text-platinum/75 flex flex-col gap-2 font-light list-none pl-0">
+                        {role.prerequisites.map((req, i) => (
+                          <li key={i} className="flex items-start gap-2.5">
+                            <CheckCircle2 size={13} className="text-steel-blue shrink-0 mt-0.5" />
+                            <span>{req}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-3">
-                    <span className="font-space text-[10.5px] font-bold uppercase tracking-wider text-steel-blue">
-                      Core Prerequisites
-                    </span>
-                    <ul className="font-inter text-xs text-platinum/75 flex flex-col gap-2 font-light list-none pl-0">
-                      {[
-                        "Solid grasp of React.js, Next.js (App Router), and modern TypeScript.",
-                        "Mastery of responsive layouts, HSL design tokens, and CSS frameworks (Tailwind).",
-                        "Experience integrating secure JSON/Serverless API endpoints with robust error intercepts.",
-                        "Eye for dynamic user experiences, glassmorphic themes, and Framer Motion micro-animations.",
-                        "Commitment to clean modular code structures, Git workflows, and technical reviews."
-                      ].map((req, i) => (
-                        <li key={i} className="flex items-start gap-2.5">
-                          <CheckCircle2 size={13} className="text-steel-blue shrink-0 mt-0.5" />
-                          <span>{req}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                  {/* Right Column: Responsibilities & Tech Tags */}
+                  <div className="md:col-span-5 flex flex-col gap-6 justify-between border-t md:border-t-0 md:border-l border-ivory/5 pt-6 md:pt-0 md:pl-8">
+                    <div className="flex flex-col gap-3">
+                      <span className="font-space text-[10.5px] font-bold uppercase tracking-wider text-steel-blue">
+                        System Responsibilities
+                      </span>
+                      <ul className="font-inter text-xs text-platinum/75 flex flex-col gap-2.5 font-light list-none pl-0">
+                        {role.responsibilities.map((resp, i) => (
+                          <li key={i} className="flex items-start gap-2.5">
+                            <Terminal size={12} className="text-steel-blue/70 shrink-0 mt-0.5" />
+                            <span>{resp}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-                {/* Right Column: Responsibilities & Tech Tags */}
-                <div className="md:col-span-5 flex flex-col gap-6 justify-between border-t md:border-t-0 md:border-l border-ivory/5 pt-6 md:pt-0 md:pl-8">
-                  <div className="flex flex-col gap-3">
-                    <span className="font-space text-[10.5px] font-bold uppercase tracking-wider text-steel-blue">
-                      System Responsibilities
-                    </span>
-                    <ul className="font-inter text-xs text-platinum/75 flex flex-col gap-2.5 font-light list-none pl-0">
-                      {[
-                        "Translate beautiful UX blueprints into responsive Next.js views.",
-                        "Build performant, highly interactive metrics dashboards.",
-                        "Optimize client bundles, hydration streams, and SEO structures.",
-                        "Integrate AI agent response triggers and file ingestion channels."
-                      ].map((resp, i) => (
-                        <li key={i} className="flex items-start gap-2.5">
-                          <Terminal size={12} className="text-steel-blue/70 shrink-0 mt-0.5" />
-                          <span>{resp}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="flex flex-col gap-3.5 mt-4">
-                    <span className="font-space text-[9px] font-semibold uppercase tracking-wider text-platinum/40">
-                      Primary Technology Toolkit
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {["React.js", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "UI/UX Design"].map((s) => (
-                        <span key={s} className="text-[10px] font-mono bg-steel-blue/10 border border-steel-blue/20 px-2.5 py-1 rounded-xl text-steel-blue">
-                          {s}
-                        </span>
-                      ))}
+                    <div className="flex flex-col gap-3.5 mt-4">
+                      <span className="font-space text-[9px] font-semibold uppercase tracking-wider text-platinum/40">
+                        Primary Toolkit / Technologies
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {role.skills.map((s) => (
+                          <span key={s} className="text-[10px] font-mono bg-steel-blue/10 border border-steel-blue/20 px-2.5 py-1 rounded-xl text-steel-blue">
+                            {s}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Action Apply Button */}
-              <div className="border-t border-ivory/5 pt-6 flex items-center justify-between gap-4">
-                <p className="font-inter text-[11px] text-platinum/40 leading-relaxed font-light hidden sm:block">
-                  Applications are reviewed within 48 hours by our engineering architecture team.
-                </p>
+                {/* Action Apply Button */}
+                <div className="border-t border-ivory/5 pt-6 flex items-center justify-between gap-4">
+                  <p className="font-inter text-[11px] text-platinum/40 leading-relaxed font-light hidden sm:block">
+                    Applications are reviewed within 48 hours by our founding team.
+                  </p>
 
-                <button
-                  onClick={() => handleSelectRoleToApply("Frontend Developer")}
-                  className="px-6 py-3.5 rounded-xl bg-ivory text-charcoal hover:bg-platinum hover:scale-[1.02] active:scale-[0.98] font-space font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ml-auto"
-                >
-                  <Sparkles size={13} />
-                  Apply for Vacancy
-                </button>
+                  <button
+                    onClick={() => handleSelectRoleToApply(role.title)}
+                    className="px-6 py-3.5 rounded-xl bg-ivory text-charcoal hover:bg-platinum hover:scale-[1.02] active:scale-[0.98] font-space font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer ml-auto"
+                  >
+                    <Sparkles size={13} />
+                    Apply for Vacancy
+                  </button>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
 
           {/* ========================================================
@@ -535,12 +601,20 @@ export default function CareersPage() {
                             <label className="font-space text-[10px] font-semibold uppercase tracking-wider text-platinum/50">
                               Role Applying For *
                             </label>
-                            <input
-                              type="text"
-                              value="Frontend Developer"
-                              disabled
-                              className="w-full bg-charcoal/40 border border-ivory/10 rounded-xl px-4 py-3 text-xs text-platinum/50 font-medium cursor-not-allowed focus:outline-none"
-                            />
+                            <select
+                              value={selectedRole}
+                              onChange={(e) => {
+                                setSelectedRole(e.target.value);
+                                setSkills([]); // Reset skills selection on role change to prevent mixing up
+                              }}
+                              className="w-full bg-charcoal/60 border border-ivory/10 rounded-xl px-4 py-3 text-xs text-ivory focus:outline-none focus:border-steel-blue focus:ring-1 focus:ring-steel-blue transition-all appearance-none cursor-pointer"
+                            >
+                              {openRoles.map((role) => (
+                                <option key={role.title} value={role.title} className="bg-charcoal text-ivory">
+                                  {role.title}
+                                </option>
+                              ))}
+                            </select>
                           </div>
 
                           <div className="flex flex-col gap-2">
@@ -564,13 +638,13 @@ export default function CareersPage() {
 
                         <div className="flex flex-col gap-2">
                           <label className="font-space text-[10px] font-semibold uppercase tracking-wider text-platinum/50 flex items-center gap-1.5 select-none">
-                            <GithubIcon className="w-3.5 h-3.5 text-steel-blue" /> GitHub Profile *
+                            <GithubIcon className="w-3.5 h-3.5 text-steel-blue" /> GitHub Profile {selectedRole === "Frontend Developer" ? "*" : "(Optional)"}
                           </label>
                           <input
                             type="url"
                             value={githubUrl}
                             onChange={(e) => setGithubUrl(e.target.value)}
-                            placeholder="e.g. https://github.com/yourprofile"
+                            placeholder={selectedRole === "Frontend Developer" ? "e.g. https://github.com/yourprofile" : "e.g. https://github.com/yourprofile (optional)"}
                             className="w-full bg-charcoal/60 border border-ivory/10 rounded-xl px-4 py-3 text-xs text-ivory placeholder-platinum/30 focus:outline-none focus:border-steel-blue focus:ring-1 focus:ring-steel-blue transition-all"
                           />
                         </div>
@@ -591,13 +665,13 @@ export default function CareersPage() {
 
                           <div className="flex flex-col gap-2">
                             <label className="font-space text-[10px] font-semibold uppercase tracking-wider text-platinum/50 flex items-center gap-1.5 select-none">
-                              <LinkedinIcon className="w-3.5 h-3.5 text-steel-blue" /> LinkedIn Profile
+                              <LinkedinIcon className="w-3.5 h-3.5 text-steel-blue" /> LinkedIn Profile {selectedRole !== "Frontend Developer" ? "*" : "(Optional)"}
                             </label>
                             <input
                               type="url"
                               value={linkedinUrl}
                               onChange={(e) => setLinkedinUrl(e.target.value)}
-                              placeholder="e.g. https://linkedin.com/in/yourprofile"
+                              placeholder={selectedRole !== "Frontend Developer" ? "e.g. https://linkedin.com/in/yourprofile" : "e.g. https://linkedin.com/in/yourprofile (optional)"}
                               className="w-full bg-charcoal/60 border border-ivory/10 rounded-xl px-4 py-3 text-xs text-ivory placeholder-platinum/30 focus:outline-none focus:border-steel-blue focus:ring-1 focus:ring-steel-blue transition-all"
                             />
                           </div>
@@ -617,10 +691,10 @@ export default function CareersPage() {
                         {/* Skills Selection Grid */}
                         <div className="flex flex-col gap-3.5">
                           <label className="font-space text-[10px] font-semibold uppercase tracking-wider text-platinum/50">
-                            Core Technologies *
+                            {selectedRole === "Frontend Developer" ? "Core Technologies *" : "Core Tools / Skills *"}
                           </label>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            {coreTechnologies.map((tech) => {
+                            {(selectedRole === "Frontend Developer" ? coreTechnologies : businessSkills).map((tech) => {
                               const isSelected = skills.includes(tech);
                               return (
                                 <button
@@ -649,20 +723,28 @@ export default function CareersPage() {
                             rows={3}
                             value={whyJoin}
                             onChange={(e) => setWhyJoin(e.target.value)}
-                            placeholder="Tell us what interests you about our engineering culture, systems approach, or technical direction."
+                            placeholder={
+                              selectedRole === "Frontend Developer"
+                                ? "Tell us what interests you about our engineering culture, systems approach, or technical direction."
+                                : "Tell us what interests you about Aetherion, our growth path, and joining our founding team."
+                            }
                             className="w-full bg-charcoal/60 border border-ivory/10 rounded-xl px-4 py-3 text-xs text-ivory placeholder-platinum/30 focus:outline-none focus:border-steel-blue focus:ring-1 focus:ring-steel-blue transition-all resize-none leading-relaxed"
                           />
                         </div>
 
                         <div className="flex flex-col gap-2">
                           <label className="font-space text-[10px] font-semibold uppercase tracking-wider text-platinum/50">
-                            Describe a project you're proud of *
+                            Describe a project or achievement you're proud of *
                           </label>
                           <textarea
                             rows={3}
                             value={proudProject}
                             onChange={(e) => setProudProject(e.target.value)}
-                            placeholder="Share a system, application, or technical challenge you enjoyed building and explain your contribution."
+                            placeholder={
+                              selectedRole === "Frontend Developer"
+                                ? "Share a system, application, or technical challenge you enjoyed building and explain your contribution."
+                                : "Share a campaign, outreach strategy, client relationship, or project you are proud of and explain your contribution."
+                            }
                             className="w-full bg-charcoal/60 border border-ivory/10 rounded-xl px-4 py-3 text-xs text-ivory placeholder-platinum/30 focus:outline-none focus:border-steel-blue focus:ring-1 focus:ring-steel-blue transition-all resize-none leading-relaxed"
                           />
                         </div>
